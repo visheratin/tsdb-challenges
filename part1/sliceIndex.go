@@ -1,9 +1,6 @@
 package part1
 
 import (
-	"bytes"
-	"encoding/gob"
-
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
@@ -18,12 +15,6 @@ func newSliceIndex(name string, size int) *SliceIndex {
 		Blocks: make([]data.Block, 0, size),
 	}
 	return &idx
-}
-
-func (idx *SliceIndex) Size() int {
-	var buf bytes.Buffer
-	gob.NewEncoder(&buf).Encode(idx)
-	return len(buf.Bytes())
 }
 
 func (idx *SliceIndex) Insert(b data.Block) {

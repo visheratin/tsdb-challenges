@@ -9,7 +9,6 @@ import (
 type index interface {
 	Insert(b data.Block)
 	Search(min, max float64, res []data.Block) []data.Block
-	Size() int
 }
 
 func createIndex(iType string, size int) index {

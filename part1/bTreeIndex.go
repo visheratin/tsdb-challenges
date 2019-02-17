@@ -1,8 +1,6 @@
 package part1
 
 import (
-	"bytes"
-	"encoding/gob"
 	"math"
 
 	"github.com/visheratin/tsdb-challenges/data"
@@ -23,12 +21,6 @@ func newBTreeIndex(id string) *BTreeIndex {
 		},
 	}
 	return &idx
-}
-
-func (idx *BTreeIndex) Size() int {
-	var buf bytes.Buffer
-	gob.NewEncoder(&buf).Encode(idx)
-	return len(buf.Bytes())
 }
 
 func (idx *BTreeIndex) Insert(b data.Block) {
