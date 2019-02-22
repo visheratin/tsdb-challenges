@@ -50,8 +50,12 @@ func (node AdvTreeNode) search(min float64, max float64, res []data.Block) []dat
 			res = append(res, node.Block)
 			return res
 		}
-		res = node.LeftPart.search(min, max, res)
-		res = node.RightPart.search(min, max, res)
+		if node.LeftPart != nil {
+			res = node.LeftPart.search(min, max, res)
+		}
+		if node.RightPart != nil {
+			res = node.RightPart.search(min, max, res)
+		}
 	}
 	return res
 }
