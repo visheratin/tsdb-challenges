@@ -13,6 +13,10 @@ func NewStore(sType string, path string) Store {
 		return GobStore{
 			path: path,
 		}
+	case "parquet":
+		return ParquetStore{
+			path: path,
+		}
 	}
 	return nil
 }

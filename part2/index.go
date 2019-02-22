@@ -36,7 +36,7 @@ func NewIndex(id string, blockInterval int64, storeType string, storePath string
 		}
 	}
 	if curIdx != len(d)-1 {
-		dataParts = append(dataParts, d[curIdx:len(d)])
+		dataParts = append(dataParts, d[curIdx:])
 	}
 	blocks, err := idx.Store.Insert(dataParts)
 	if err != nil {
