@@ -18,3 +18,9 @@ func generateData(len int) []data.Element {
 	}
 	return res
 }
+
+var testDataSmall = generateData(600000)
+
+var testDataMedium = generateData(6000000)
+
+var testDataLarge = generateData(60000000)

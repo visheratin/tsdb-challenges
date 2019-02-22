@@ -29,7 +29,7 @@ func (store GobStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
 		}
 		blocks = append(blocks, block)
 		fpath := path.Join(store.path, strconv.Itoa(i))
-		err = ioutil.WriteFile(fpath, b, 777)
+		err = ioutil.WriteFile(fpath, b, 0777)
 		if err != nil {
 			return nil, err
 		}
