@@ -61,12 +61,16 @@ func (idx Index) Extract(start, finish int64) ([]data.Element, error) {
 	blockIds := []int{}
 	blockSizes := []int{}
 	blockNums := []int{}
+	var offset int64
+	for i := 0; i < startIdx; i++ {
+		offset += int64(idx.Blocks[i].Size)
+	}
 	for i := startIdx; i <= finishIdx; i++ {
 		blockIds = append(blockIds, i)
 		blockNums = append(blockNums, idx.Blocks[i].ElNum)
 		blockSizes = append(blockSizes, idx.Blocks[i].Size)
 	}
-	els, err := idx.Store.Read(blockIds, blockSizes, blockNums)
+	els, err := idx.Store.Read(blockIds, blockSizes, blockNums, offset)
 	if err != nil {
 		return nil, err
 	}

@@ -4,7 +4,7 @@ import "github.com/visheratin/tsdb-challenges/data"
 
 type Store interface {
 	Insert(dataParts [][]data.Element) ([]data.Block, error)
-	Read(blockIds []int, blockSizes []int, blockNums []int) ([]data.Element, error)
+	Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) ([]data.Element, error)
 }
 
 func NewStore(sType string, path string) Store {
@@ -15,6 +15,10 @@ func NewStore(sType string, path string) Store {
 		}
 	case "parquet":
 		return ParquetStore{
+			path: path,
+		}
+	case "binary":
+		return BinaryStore{
 			path: path,
 		}
 	}

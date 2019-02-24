@@ -4,7 +4,7 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
-func generateData(len int) []data.Element {
+func GenerateData(len int) []data.Element {
 	res := make([]data.Element, len)
 	t := int64(0)
 	var v float64
@@ -19,8 +19,8 @@ func generateData(len int) []data.Element {
 	return res
 }
 
-var testDataSmall = generateData(600000)
+var testDataSmall = GenerateData(600000)
 
-var testDataMedium = generateData(6000000)
+var testDataMedium = GenerateData(6000000)
 
-var testDataLarge = generateData(60000000)
+var testDataLarge = GenerateData(60000000)

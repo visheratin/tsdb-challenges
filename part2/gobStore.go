@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"io/ioutil"
+	"os"
 	"path"
-	"strconv"
 
 	"github.com/visheratin/tsdb-challenges/data"
 )
@@ -15,8 +15,10 @@ type GobStore struct {
 }
 
 func (store GobStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
-	blocks := make([]data.Block, len(dataParts))
-	for i, d := range dataParts {
+	blocks := make([]data.Block, 0, len(dataParts))
+	fpath := path.Join(store.path, "data")
+	encoded := []byte{}
+	for _, d := range dataParts {
 		buf := bytes.NewBuffer(nil)
 		err := gob.NewEncoder(buf).Encode(d)
 		if err != nil {
@@ -27,28 +29,46 @@ func (store GobStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
 			Size:  len(b),
 			ElNum: len(d),
 		}
+		encoded = append(encoded, b...)
 		blocks = append(blocks, block)
-		fpath := path.Join(store.path, strconv.Itoa(i))
-		err = ioutil.WriteFile(fpath, b, 0777)
-		if err != nil {
-			return nil, err
-		}
+
+	}
+	err := ioutil.WriteFile(fpath, encoded, 0777)
+	if err != nil {
+		return nil, err
 	}
 	return blocks, nil
 }
 
-func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int) ([]data.Element, error) {
+func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) ([]data.Element, error) {
 	totalNum := 0
-	for _, s := range blockSizes {
+	for _, s := range blockNums {
 		totalNum += s
 	}
+	var totalSize int
+	for _, s := range blockSizes {
+		totalSize += s
+	}
+	fpath := path.Join(store.path, "data")
+	f, err := os.Open(fpath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	_, err = f.Seek(offset, 0)
+	zb := make([]byte, totalSize)
+	var n, i int
+	for err == nil && n != totalSize {
+		i, err = f.Read(zb[n:])
+		n += i
+	}
+	if err != nil {
+		return nil, err
+	}
 	res := make([]data.Element, 0, totalNum)
-	for _, i := range blockIds {
-		fpath := path.Join(store.path, strconv.Itoa(i))
-		rawData, err := ioutil.ReadFile(fpath)
-		if err != nil {
-			return nil, err
-		}
+	pos := int64(0)
+	for i := range blockNums {
+		rawData := zb[pos:(pos + int64(blockSizes[i]))]
 		var allData []data.Element
 		buf := bytes.NewBuffer(rawData)
 		err = gob.NewDecoder(buf).Decode(&allData)
@@ -56,6 +76,7 @@ func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int) ([
 			return nil, err
 		}
 		res = append(res, allData...)
+		pos += int64(blockSizes[i])
 	}
 	return res, nil
 }
