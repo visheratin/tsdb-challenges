@@ -38,8 +38,7 @@ func createBlock(d []data.Element) (data.Block, []byte, error) {
 	if len(d) == 0 {
 		return data.Block{}, nil, errors.New("data slice is empty")
 	}
-	bl := 4 * len(d)
-	bl += 8 * len(d)
+	bl := 12 * len(d)
 	buf := make([]byte, bl)
 	var ts uint32
 	var tsp int64
