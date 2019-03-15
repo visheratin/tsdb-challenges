@@ -120,7 +120,7 @@ func (store Store) Read(blockIds []int, blockSizes []int, blockNums []int,
 	for _, num := range blockNums {
 		totalNum += num
 	}
-	res := Elements{}
+	res := Elements{Type: dtype}
 	switch dtype {
 	case part3.Int32:
 		res.I32 = make([]part3.Int32Element, 0, totalNum)
