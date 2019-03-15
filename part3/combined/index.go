@@ -95,7 +95,3 @@ func (idx Index) Extract(start, finish int64) (Elements, error) {
 	}
 	return els.Subset(firstIdx, lastIdx), nil
 }
-
-// func serialize(data []data.Element) ([]byte, error) {
-
-// }

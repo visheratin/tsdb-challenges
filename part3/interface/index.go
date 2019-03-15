@@ -93,7 +93,3 @@ func (idx Index) Extract(start, finish int64) ([]part3.Element, error) {
 	}
 	return els[firstIdx:lastIdx], nil
 }
-
-// func serialize(data []data.Element) ([]byte, error) {
-
-// }
