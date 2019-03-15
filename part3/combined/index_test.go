@@ -1,10 +1,12 @@
-package part3
+package combined
 
 import (
 	"math/rand"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/visheratin/tsdb-challenges/part3"
 )
 
 var dataPath = "./data-binary"
@@ -16,25 +18,25 @@ func prepare(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_small(b *testing.B) {
+func BenchmarkCombinedStoreCreate_small(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_small(b *testing.B) {
+func BenchmarkCombinedStoreExtract_small(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataSmall[len(testDataSmall)-1].Timestamp()
+	finishTimestamp := testDataSmall.Timestamp(testDataSmall.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -50,25 +52,25 @@ func BenchmarkInterfaceStoreExtract_small(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_medium(b *testing.B) {
+func BenchmarkCombinedStoreCreate_medium(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_medium(b *testing.B) {
+func BenchmarkCombinedStoreExtract_medium(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataMedium[len(testDataMedium)-1].Timestamp()
+	finishTimestamp := testDataMedium.Timestamp(testDataMedium.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -84,25 +86,25 @@ func BenchmarkInterfaceStoreExtract_medium(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_large(b *testing.B) {
+func BenchmarkCombinedStoreCreate_large(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_large(b *testing.B) {
+func BenchmarkCombinedStoreExtract_large(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataLarge[len(testDataLarge)-1].Timestamp()
+	finishTimestamp := testDataLarge.Timestamp(testDataLarge.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

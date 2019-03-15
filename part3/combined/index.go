@@ -1,44 +1,46 @@
-package part3
+package combined
 
 import (
 	"errors"
 
 	"github.com/visheratin/tsdb-challenges/data"
+	"github.com/visheratin/tsdb-challenges/part3"
 )
 
 type Index struct {
 	ID            string
 	StartTime     int64
-	Type          DataType
+	Type          part3.DataType
 	BlockInterval int64
 	Store         Store
 	Blocks        []data.Block
 }
 
-func NewIndex(id string, blockInterval int64, storeType string, storePath string, d []Element, dtype DataType) (Index, error) {
-	if len(d) == 0 {
+func NewIndex(id string, blockInterval int64, storeType string, storePath string, d Elements, dtype part3.DataType) (Index, error) {
+	if d.Len() == 0 {
 		return Index{}, errors.New("data slice is empty")
 	}
 	idx := Index{
 		ID:            id,
 		BlockInterval: blockInterval,
-		Store:         NewStore(storeType, storePath),
+		Store:         Store{path: storePath},
 		Type:          dtype,
 	}
-	dataParts := [][]Element{}
-	s := d[0].Timestamp()
+	dataParts := []Elements{}
+	s := d.Timestamp(0)
 	f := s + blockInterval
 	curIdx := 0
-	for i := range d {
-		if d[i].Timestamp() > f {
-			dataParts = append(dataParts, d[curIdx:i])
+	l := d.Len()
+	for i := 0; i < l; i++ {
+		if d.Timestamp(i) > f {
+			dataParts = append(dataParts, d.Subset(curIdx, i))
 			curIdx = i
 			s = f
 			f += blockInterval
 		}
 	}
-	if curIdx != len(d)-1 {
-		dataParts = append(dataParts, d[curIdx:])
+	if curIdx != d.Len()-1 {
+		dataParts = append(dataParts, d.Subset(curIdx, d.Len()))
 	}
 	blocks, err := idx.Store.Insert(dataParts, dtype)
 	if err != nil {
@@ -48,9 +50,9 @@ func NewIndex(id string, blockInterval int64, storeType string, storePath string
 	return idx, nil
 }
 
-func (idx Index) Extract(start, finish int64) ([]Element, error) {
+func (idx Index) Extract(start, finish int64) (Elements, error) {
 	if finish < idx.StartTime {
-		return nil, errors.New("no data for the specified period")
+		return Elements{}, errors.New("no data for the specified period")
 	}
 	startIdx := int(start / idx.BlockInterval)
 	if startIdx > (len(idx.Blocks) - 1) {
@@ -74,23 +76,24 @@ func (idx Index) Extract(start, finish int64) ([]Element, error) {
 	}
 	els, err := idx.Store.Read(blockIds, blockSizes, blockNums, offset, idx.Type)
 	if err != nil {
-		return nil, err
+		return Elements{}, err
 	}
 	firstIdx := 0
 	lastIdx := 0
-	for i := range els {
-		if els[i].Timestamp() >= start {
+	l := els.Len()
+	for i := 0; i < l; i++ {
+		if els.Timestamp(i) >= start {
 			firstIdx = i
 			break
 		}
 	}
-	for i := len(els) - 1; i >= 0; i-- {
-		if els[i].Timestamp() <= finish {
+	for i := l - 1; i >= 0; i-- {
+		if els.Timestamp(i) <= finish {
 			lastIdx = i + 1
 			break
 		}
 	}
-	return els[firstIdx:lastIdx], nil
+	return els.Subset(firstIdx, lastIdx), nil
 }
 
 // func serialize(data []data.Element) ([]byte, error) {
