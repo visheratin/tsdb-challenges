@@ -28,8 +28,8 @@ func GenerateData(len int, dtype part3.DataType) Elements {
 	return res
 }
 
-var testDataSmall = GenerateData(600000, part3.Float64)
+var testDataInt32 = GenerateData(6000000, part3.Int32)
 
-var testDataMedium = GenerateData(6000000, part3.Float64)
+var testDataFloat32 = GenerateData(6000000, part3.Float32)
 
-var testDataLarge = GenerateData(60000000, part3.Float64)
+var testDataFloat64 = GenerateData(6000000, part3.Float64)

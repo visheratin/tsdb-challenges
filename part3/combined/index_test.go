@@ -18,25 +18,25 @@ func prepare(b *testing.B) {
 	}
 }
 
-func BenchmarkCombinedStoreCreate_small(b *testing.B) {
+func BenchmarkCombinedStoreCreate_int32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataInt32, part3.Int32)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkCombinedStoreExtract_small(b *testing.B) {
+func BenchmarkCombinedStoreExtract_int32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataInt32, part3.Int32)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataSmall.Timestamp(testDataSmall.Len() - 1)
+	finishTimestamp := testDataInt32.Timestamp(testDataInt32.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -52,25 +52,25 @@ func BenchmarkCombinedStoreExtract_small(b *testing.B) {
 	}
 }
 
-func BenchmarkCombinedStoreCreate_medium(b *testing.B) {
+func BenchmarkCombinedStoreCreate_float32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat32, part3.Float32)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkCombinedStoreExtract_medium(b *testing.B) {
+func BenchmarkCombinedStoreExtract_float32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat32, part3.Float32)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataMedium.Timestamp(testDataMedium.Len() - 1)
+	finishTimestamp := testDataFloat32.Timestamp(testDataFloat32.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -86,25 +86,25 @@ func BenchmarkCombinedStoreExtract_medium(b *testing.B) {
 	}
 }
 
-func BenchmarkCombinedStoreCreate_large(b *testing.B) {
+func BenchmarkCombinedStoreCreate_float64(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat64, part3.Float64)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkCombinedStoreExtract_large(b *testing.B) {
+func BenchmarkCombinedStoreExtract_float64(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat64, part3.Float64)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataLarge.Timestamp(testDataLarge.Len() - 1)
+	finishTimestamp := testDataFloat64.Timestamp(testDataFloat64.Len() - 1)
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

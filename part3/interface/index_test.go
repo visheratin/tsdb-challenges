@@ -18,25 +18,25 @@ func prepare(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_small(b *testing.B) {
+func BenchmarkInterfaceStoreCreate_int32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataInt32, part3.Int32)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_small(b *testing.B) {
+func BenchmarkInterfaceStoreExtract_int32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataSmall, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataInt32, part3.Int32)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataSmall[len(testDataSmall)-1].Timestamp()
+	finishTimestamp := testDataInt32[len(testDataInt32)-1].Timestamp()
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -52,25 +52,25 @@ func BenchmarkInterfaceStoreExtract_small(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_medium(b *testing.B) {
+func BenchmarkInterfaceStoreCreate_float32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat32, part3.Float32)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_medium(b *testing.B) {
+func BenchmarkInterfaceStoreExtract_float32(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataMedium, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat32, part3.Float32)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataMedium[len(testDataMedium)-1].Timestamp()
+	finishTimestamp := testDataFloat32[len(testDataFloat32)-1].Timestamp()
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -86,25 +86,25 @@ func BenchmarkInterfaceStoreExtract_medium(b *testing.B) {
 	}
 }
 
-func BenchmarkInterfaceStoreCreate_large(b *testing.B) {
+func BenchmarkInterfaceStoreCreate_float64(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
+		_, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat64, part3.Float64)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
 }
 
-func BenchmarkInterfaceStoreExtract_large(b *testing.B) {
+func BenchmarkInterfaceStoreExtract_float64(b *testing.B) {
 	prepare(b)
 	b.ResetTimer()
-	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataLarge, part3.Float64)
+	idx, err := NewIndex("123", 3600000, "interface", dataPath, testDataFloat64, part3.Float64)
 	if err != nil {
 		b.Fatal(err)
 	}
-	finishTimestamp := testDataLarge[len(testDataLarge)-1].Timestamp()
+	finishTimestamp := testDataFloat64[len(testDataFloat64)-1].Timestamp()
 	minStart := finishTimestamp - int64(500000000)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
