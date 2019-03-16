@@ -19,7 +19,18 @@ type Store struct {
 func (store Store) Insert(dataParts []Elements, dtype part3.DataType) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
-	buf := []byte{}
+	var dl int
+	for _, d := range dataParts {
+		switch dtype {
+		case part3.Int32:
+			dl += 8 * d.Len()
+		case part3.Float32:
+			dl += 8 * d.Len()
+		case part3.Float64:
+			dl += 12 * d.Len()
+		}
+	}
+	buf := make([]byte, 0, dl)
 	for _, d := range dataParts {
 		block, bd, err := createBlock(d, dtype)
 		if err != nil {

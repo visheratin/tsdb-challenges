@@ -19,7 +19,18 @@ type Store struct {
 func (store Store) Insert(dataParts [][]part3.Element, dtype part3.DataType) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
-	buf := []byte{}
+	var dl int
+	for _, d := range dataParts {
+		switch dtype {
+		case part3.Int32:
+			dl += 8 * len(d)
+		case part3.Float32:
+			dl += 8 * len(d)
+		case part3.Float64:
+			dl += 12 * len(d)
+		}
+	}
+	buf := make([]byte, 0, dl)
 	for _, d := range dataParts {
 		block, bd, err := createBlock(d, dtype)
 		if err != nil {
@@ -80,7 +91,7 @@ func createBlock(d []part3.Element, dtype part3.DataType) (data.Block, []byte, e
 			binary.LittleEndian.PutUint32(buf[c:c+4], f32d)
 			c += 4
 		case part3.Float64:
-			f64 = math.Float64bits(d[i].Value())
+			f64 = math.Float64bits(d[i].(part3.Float64Element).Val)
 			f64d = f64 - f64p
 			f64p = f64
 			binary.LittleEndian.PutUint64(buf[c:c+8], f64d)
