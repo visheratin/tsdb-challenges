@@ -18,7 +18,11 @@ type BinaryStore struct {
 func (store BinaryStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
-	buf := []byte{}
+	var dl int
+	for _, d := range dataParts {
+		dl += 12 * len(d)
+	}
+	buf := make([]byte, 0, dl)
 	for _, d := range dataParts {
 		block, bd, err := createBlock(d)
 		if err != nil {
