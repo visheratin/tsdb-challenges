@@ -1,0 +1,14 @@
+syntax = 'proto2';
+
+package protobuf;
+
+import "gogo.proto";
+
+message ProtoElement {
+  required int64 Timestamp = 1 [(gogoproto.nullable) = false];
+  required double Value = 2 [(gogoproto.nullable) = false];
+}
+
+message ProtoElements {
+  repeated ProtoElement Data = 1 [(gogoproto.nullable) = false];
+}
