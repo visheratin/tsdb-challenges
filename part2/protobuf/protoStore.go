@@ -1,10 +1,8 @@
 package protobuf
 
 import (
-	"encoding/binary"
 	"errors"
 	"io/ioutil"
-	"math"
 	"os"
 	"path"
 
@@ -18,13 +16,9 @@ type ProtoStore struct {
 func (store ProtoStore) Insert(dataParts []ProtoElements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
-	var dl int
+	buf := make([]byte, 0)
 	for _, d := range dataParts {
-		dl += 12 * len(d.Data)
-	}
-	buf := make([]byte, 0, dl)
-	for _, d := range dataParts {
-		block, bd, err := createBlock(d.Data)
+		block, bd, err := createBlock(d)
 		if err != nil {
 			return nil, err
 		}
@@ -38,36 +32,18 @@ func (store ProtoStore) Insert(dataParts []ProtoElements) ([]data.Block, error) 
 	return blocks, nil
 }
 
-func createBlock(d []ProtoElement) (data.Block, []byte, error) {
-	if len(d) == 0 {
+func createBlock(d ProtoElements) (data.Block, []byte, error) {
+	if len(d.Data) == 0 {
 		return data.Block{}, nil, errors.New("data slice is empty")
 	}
-	bl := 12 * len(d)
-	buf := make([]byte, bl)
-	var ts uint32
-	var tsp int64
-	var t int64
-	var f64, f64p, f64d uint64
-	l := len(d)
-	c := 0
-	for i := 0; i < l; i++ {
-		t = d[i].Timestamp
-		f64 = math.Float64bits(d[i].Value)
-		f64d = f64 - f64p
-		f64p = f64
-		if i > 0 {
-			ts = uint32(t - tsp)
-		} else {
-			ts = uint32(t)
-		}
-		tsp = t
-		binary.LittleEndian.PutUint32(buf[c:c+4], ts)
-		c += 4
-		binary.LittleEndian.PutUint64(buf[c:c+8], uint64(f64d))
-		c += 8
+	var buf []byte
+	var err error
+	buf, err = d.Marshal()
+	if err != nil {
+		return data.Block{}, nil, err
 	}
 	b := data.Block{
-		ElNum: len(d),
+		ElNum: len(d.Data),
 		Size:  len(buf),
 	}
 	return b, buf, nil
@@ -105,39 +81,14 @@ func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, 
 		if err != nil {
 			return ProtoElements{}, err
 		}
-		res.Data = append(res.Data, d...)
+		res.Data = append(res.Data, d.Data...)
 		pos += int64(blockSizes[i])
 	}
 	return res, nil
 }
 
-func readBlock(elNum int, bd []byte) ([]ProtoElement, error) {
-	var res []ProtoElement
-	var ts int64
-	res = make([]ProtoElement, elNum)
-	ec := 0
-	i := 0
-	var f64 uint64
-	var tsV uint32
-	var f64e ProtoElement
-	var tb, vb []byte
-	for i < len(bd) && ec < elNum {
-		tb = bd[i : i+4]
-		tsV = binary.LittleEndian.Uint32(tb)
-		ts += int64(tsV)
-		i += 4
-		vb = bd[i : i+8]
-		f64 += binary.LittleEndian.Uint64(vb)
-		f64v := math.Float64frombits(f64)
-		tsv := ts
-		i += 8
-		f64e = ProtoElement{
-			Timestamp: tsv,
-			Value:     f64v,
-		}
-		res[ec] = f64e
-		ec++
-	}
-	res = res[0:ec]
-	return res, nil
+func readBlock(elNum int, bd []byte) (ProtoElements, error) {
+	var res ProtoElements
+	err := res.Unmarshal(bd)
+	return res, err
 }
