@@ -76,8 +76,9 @@ func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, 
 	}
 	res := ProtoElements{Data: make([]ProtoElement, 0, totalNum)}
 	pos := int64(0)
-	for i, num := range blockNums {
-		d, err := readBlock(num, zb[pos:(pos+int64(blockSizes[i]))])
+	for i := range blockNums {
+		var d ProtoElements
+		err = d.Unmarshal(zb[pos:(pos + int64(blockSizes[i]))])
 		if err != nil {
 			return ProtoElements{}, err
 		}
@@ -85,10 +86,4 @@ func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, 
 		pos += int64(blockSizes[i])
 	}
 	return res, nil
-}
-
-func readBlock(elNum int, bd []byte) (ProtoElements, error) {
-	var res ProtoElements
-	err := res.Unmarshal(bd)
-	return res, err
 }
