@@ -24,6 +24,7 @@ func BenchmarkAdvTreeIndexSearch_1000_init(b *testing.B) {
 		_ = idx.Search(min, max, res)
 	}
 }
+
 func BenchmarkAdvTreeIndexSearch_10000_empty(b *testing.B) {
 	idx := createIndex("advTree", 10000)
 	min, max := searchBorders()
@@ -32,6 +33,7 @@ func BenchmarkAdvTreeIndexSearch_10000_empty(b *testing.B) {
 		_ = idx.Search(min, max, nil)
 	}
 }
+
 func BenchmarkAdvTreeIndexSearch_10000_init(b *testing.B) {
 	idx := createIndex("advTree", 10000)
 	min, max := searchBorders()
