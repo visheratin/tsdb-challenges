@@ -5,12 +5,11 @@ import (
 	"os"
 	"path"
 
-	"github.com/xitongsys/parquet-go/ParquetReader"
-	"github.com/xitongsys/parquet-go/parquet"
-
 	"github.com/visheratin/tsdb-challenges/data"
-	"github.com/xitongsys/parquet-go/ParquetFile"
-	"github.com/xitongsys/parquet-go/ParquetWriter"
+	"github.com/xitongsys/parquet-go-source/buffer"
+	"github.com/xitongsys/parquet-go/parquet"
+	"github.com/xitongsys/parquet-go/reader"
+	"github.com/xitongsys/parquet-go/writer"
 )
 
 type ParquetStore struct {
@@ -22,11 +21,11 @@ func (store ParquetStore) Insert(dataParts [][]data.Element) ([]data.Block, erro
 	fpath := path.Join(store.path, "data")
 	encoded := []byte{}
 	for _, d := range dataParts {
-		fw, err := ParquetFile.NewBufferFile(nil)
+		fw, err := buffer.NewBufferFile(nil)
 		if err != nil {
 			return nil, err
 		}
-		pw, err := ParquetWriter.NewParquetWriter(fw, new(data.Element), 4)
+		pw, err := writer.NewParquetWriter(fw, new(data.Element), 4)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +43,7 @@ func (store ParquetStore) Insert(dataParts [][]data.Element) ([]data.Block, erro
 		if err != nil {
 			return nil, err
 		}
-		b := fw.(ParquetFile.BufferFile).Bytes()
+		b := fw.(buffer.BufferFile).Bytes()
 		block := data.Block{
 			Size:  len(b),
 			ElNum: len(d),
@@ -88,11 +87,11 @@ func (store ParquetStore) Read(blockIds []int, blockSizes []int, blockNums []int
 	pos := int64(0)
 	for i := range blockIds {
 		rawData := zb[pos:(pos + int64(blockSizes[i]))]
-		fw, err := ParquetFile.NewBufferFile(rawData)
+		fw, err := buffer.NewBufferFile(rawData)
 		if err != nil {
 			return nil, err
 		}
-		pr, err := ParquetReader.NewParquetReader(fw, new(data.Element), 4)
+		pr, err := reader.NewParquetReader(fw, new(data.Element), 4)
 		if err != nil {
 			return nil, err
 		}
