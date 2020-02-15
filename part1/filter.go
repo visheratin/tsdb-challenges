@@ -4,8 +4,13 @@ import (
 	"math/rand"
 )
 
-func filter(cMin, cMax, min float64, max float64) bool {
-	// return cMin >= min && cMax <= max
+// filter performs check whether tree node borders (cMin and cMax)
+// intersect with the search interval (min and max).
+//
+// Example:
+// ________________cMin____________cMax_______________________
+// _______min________________________________________max______
+func filter(cMin, cMax, min, max float64) bool {
 	return cMin <= max && cMax >= min
 }
 
