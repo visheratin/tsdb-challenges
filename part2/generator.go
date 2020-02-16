@@ -1,16 +1,12 @@
 package part2
 
-import (
-	"github.com/visheratin/tsdb-challenges/data"
-)
-
-func GenerateData(len int) []data.Element {
-	res := make([]data.Element, len)
+func GenerateData(len int) []Element {
+	res := make([]Element, len)
 	t := int64(0)
 	var v float64
 	for i := 0; i < len; i++ {
 		v = float64(i)
-		res[i] = data.Element{
+		res[i] = Element{
 			Timestamp: t,
 			Value:     v,
 		}

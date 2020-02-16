@@ -1,4 +1,4 @@
-package protobuf
+package part2
 
 import (
 	"errors"
@@ -13,12 +13,12 @@ type ProtoStore struct {
 	path string
 }
 
-func (store ProtoStore) Insert(dataParts []ProtoElements) ([]data.Block, error) {
+func (store ProtoStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
 	buf := make([]byte, 0)
 	for _, d := range dataParts {
-		block, bd, err := createBlock(d)
+		block, bd, err := store.createBlock(d)
 		if err != nil {
 			return nil, err
 		}
@@ -32,7 +32,7 @@ func (store ProtoStore) Insert(dataParts []ProtoElements) ([]data.Block, error) 
 	return blocks, nil
 }
 
-func createBlock(d ProtoElements) (data.Block, []byte, error) {
+func (store ProtoStore) createBlock(d Elements) (data.Block, []byte, error) {
 	if len(d.Data) == 0 {
 		return data.Block{}, nil, errors.New("data slice is empty")
 	}
@@ -49,7 +49,7 @@ func createBlock(d ProtoElements) (data.Block, []byte, error) {
 	return b, buf, nil
 }
 
-func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (ProtoElements, error) {
+func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
 	var totalSize int
 	for _, s := range blockSizes {
 		totalSize += s
@@ -57,7 +57,7 @@ func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, 
 	fpath := path.Join(store.path, "data")
 	f, err := os.Open(fpath)
 	if err != nil {
-		return ProtoElements{}, err
+		return Elements{}, err
 	}
 	defer f.Close()
 	_, err = f.Seek(offset, 0)
@@ -68,19 +68,19 @@ func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, 
 		n += i
 	}
 	if err != nil {
-		return ProtoElements{}, err
+		return Elements{}, err
 	}
 	var totalNum int
 	for _, num := range blockNums {
 		totalNum += num
 	}
-	res := ProtoElements{Data: make([]ProtoElement, 0, totalNum)}
+	res := Elements{Data: make([]Element, 0, totalNum)}
 	pos := int64(0)
 	for i := range blockNums {
-		var d ProtoElements
+		var d Elements
 		err = d.Unmarshal(zb[pos:(pos + int64(blockSizes[i]))])
 		if err != nil {
-			return ProtoElements{}, err
+			return Elements{}, err
 		}
 		res.Data = append(res.Data, d.Data...)
 		pos += int64(blockSizes[i])

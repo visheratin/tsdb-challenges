@@ -14,7 +14,7 @@ type Index struct {
 	Blocks        []data.Block
 }
 
-func NewIndex(id string, blockInterval int64, storeType string, storePath string, d []data.Element) (Index, error) {
+func NewIndex(id string, blockInterval int64, storeType string, storePath string, d []Element) (Index, error) {
 	if len(d) == 0 {
 		return Index{}, errors.New("data slice is empty")
 	}
@@ -23,20 +23,22 @@ func NewIndex(id string, blockInterval int64, storeType string, storePath string
 		BlockInterval: blockInterval,
 		Store:         NewStore(storeType, storePath),
 	}
-	dataParts := [][]data.Element{}
+	dataParts := []Elements{}
 	s := d[0].Timestamp
 	f := s + blockInterval
 	curIdx := 0
 	for i := range d {
 		if d[i].Timestamp > f {
-			dataParts = append(dataParts, d[curIdx:i])
+			els := Elements{Data: d[curIdx:i]}
+			dataParts = append(dataParts, els)
 			curIdx = i
 			s = f
 			f += blockInterval
 		}
 	}
 	if curIdx != len(d)-1 {
-		dataParts = append(dataParts, d[curIdx:])
+		els := Elements{Data: d[curIdx:]}
+		dataParts = append(dataParts, els)
 	}
 	blocks, err := idx.Store.Insert(dataParts)
 	if err != nil {
@@ -46,7 +48,7 @@ func NewIndex(id string, blockInterval int64, storeType string, storePath string
 	return idx, nil
 }
 
-func (idx Index) Extract(start, finish int64) ([]data.Element, error) {
+func (idx Index) Extract(start, finish int64) ([]Element, error) {
 	if finish < idx.StartTime {
 		return nil, errors.New("no data for the specified period")
 	}
@@ -76,17 +78,17 @@ func (idx Index) Extract(start, finish int64) ([]data.Element, error) {
 	}
 	firstIdx := 0
 	lastIdx := 0
-	for i := range els {
-		if els[i].Timestamp >= start {
+	for i := range els.Data {
+		if els.Data[i].Timestamp >= start {
 			firstIdx = i
 			break
 		}
 	}
-	for i := len(els) - 1; i >= 0; i-- {
-		if els[i].Timestamp <= finish {
+	for i := len(els.Data) - 1; i >= 0; i-- {
+		if els.Data[i].Timestamp <= finish {
 			lastIdx = i + 1
 			break
 		}
 	}
-	return els[firstIdx:lastIdx], nil
+	return els.Data[firstIdx:lastIdx], nil
 }

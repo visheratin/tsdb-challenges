@@ -14,20 +14,20 @@ type GobStore struct {
 	path string
 }
 
-func (store GobStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
+func (store GobStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
 	encoded := []byte{}
 	for _, d := range dataParts {
 		buf := bytes.NewBuffer(nil)
-		err := gob.NewEncoder(buf).Encode(d)
+		err := gob.NewEncoder(buf).Encode(d.Data)
 		if err != nil {
 			return nil, err
 		}
 		b := buf.Bytes()
 		block := data.Block{
 			Size:  len(b),
-			ElNum: len(d),
+			ElNum: len(d.Data),
 		}
 		encoded = append(encoded, b...)
 		blocks = append(blocks, block)
@@ -40,7 +40,7 @@ func (store GobStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
 	return blocks, nil
 }
 
-func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) ([]data.Element, error) {
+func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
 	totalNum := 0
 	for _, s := range blockNums {
 		totalNum += s
@@ -52,7 +52,7 @@ func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, of
 	fpath := path.Join(store.path, "data")
 	f, err := os.Open(fpath)
 	if err != nil {
-		return nil, err
+		return Elements{}, err
 	}
 	defer f.Close()
 	_, err = f.Seek(offset, 0)
@@ -63,20 +63,20 @@ func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, of
 		n += i
 	}
 	if err != nil {
-		return nil, err
+		return Elements{}, err
 	}
-	res := make([]data.Element, 0, totalNum)
+	res := make([]Element, 0, totalNum)
 	pos := int64(0)
 	for i := range blockNums {
 		rawData := zb[pos:(pos + int64(blockSizes[i]))]
-		var allData []data.Element
+		var allData []Element
 		buf := bytes.NewBuffer(rawData)
 		err = gob.NewDecoder(buf).Decode(&allData)
 		if err != nil {
-			return nil, err
+			return Elements{}, err
 		}
 		res = append(res, allData...)
 		pos += int64(blockSizes[i])
 	}
-	return res, nil
+	return Elements{Data: res}, nil
 }

@@ -15,16 +15,16 @@ type BinaryStore struct {
 	path string
 }
 
-func (store BinaryStore) Insert(dataParts [][]data.Element) ([]data.Block, error) {
+func (store BinaryStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
 	var dl int
 	for _, d := range dataParts {
-		dl += 12 * len(d)
+		dl += 12 * len(d.Data) // 4 bytes for time deltas and 8 bytes for value deltas
 	}
 	buf := make([]byte, 0, dl)
 	for _, d := range dataParts {
-		block, bd, err := createBlock(d)
+		block, bd, err := store.createBlock(d.Data)
 		if err != nil {
 			return nil, err
 		}
@@ -38,7 +38,7 @@ func (store BinaryStore) Insert(dataParts [][]data.Element) ([]data.Block, error
 	return blocks, nil
 }
 
-func createBlock(d []data.Element) (data.Block, []byte, error) {
+func (store BinaryStore) createBlock(d []Element) (data.Block, []byte, error) {
 	if len(d) == 0 {
 		return data.Block{}, nil, errors.New("data slice is empty")
 	}
@@ -73,7 +73,7 @@ func createBlock(d []data.Element) (data.Block, []byte, error) {
 	return b, buf, nil
 }
 
-func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) ([]data.Element, error) {
+func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
 	var totalSize int
 	for _, s := range blockSizes {
 		totalSize += s
@@ -81,7 +81,7 @@ func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int,
 	fpath := path.Join(store.path, "data")
 	f, err := os.Open(fpath)
 	if err != nil {
-		return nil, err
+		return Elements{}, err
 	}
 	defer f.Close()
 	_, err = f.Seek(offset, 0)
@@ -92,34 +92,33 @@ func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int,
 		n += i
 	}
 	if err != nil {
-		return nil, err
+		return Elements{}, err
 	}
 	var totalNum int
 	for _, num := range blockNums {
 		totalNum += num
 	}
-	res := make([]data.Element, 0, totalNum)
+	res := make([]Element, 0, totalNum)
 	pos := int64(0)
 	for i, num := range blockNums {
 		d, err := readBlock(num, zb[pos:(pos+int64(blockSizes[i]))])
 		if err != nil {
-			return nil, err
+			return Elements{}, err
 		}
 		res = append(res, d...)
 		pos += int64(blockSizes[i])
 	}
-	return res, nil
+	return Elements{Data: res}, nil
 }
 
-func readBlock(elNum int, bd []byte) ([]data.Element, error) {
-	var res []data.Element
+func readBlock(elNum int, bd []byte) ([]Element, error) {
 	var ts int64
-	res = make([]data.Element, elNum)
+	res := make([]Element, elNum)
 	ec := 0
 	i := 0
 	var f64 uint64
 	var tsV uint32
-	var f64e data.Element
+	var f64e Element
 	var tb, vb []byte
 	for i < len(bd) && ec < elNum {
 		tb = bd[i : i+4]
@@ -129,7 +128,7 @@ func readBlock(elNum int, bd []byte) ([]data.Element, error) {
 		vb = bd[i : i+8]
 		f64 += binary.LittleEndian.Uint64(vb)
 		i += 8
-		f64e = data.Element{
+		f64e = Element{
 			Timestamp: ts,
 			Value:     math.Float64frombits(f64),
 		}
