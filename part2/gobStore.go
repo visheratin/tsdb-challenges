@@ -10,10 +10,15 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
+// GobStore is an implementation of Store that serializes data
+// parts into gob binary form.
 type GobStore struct {
 	path string
 }
 
+// Insert converts every data part into gob binary representation,
+// combines all representations into the file, and creates block
+// for every data part.
 func (store GobStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
@@ -40,6 +45,9 @@ func (store GobStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	return blocks, nil
 }
 
+// Read uses input meta-information to extract only required binary
+// representations of blocks from the file, convert them to Elements,
+// and return the result.
 func (store GobStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
 	totalNum := 0
 	for _, s := range blockNums {

@@ -9,10 +9,15 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
+// ProtoStore is an implementation of Store that serializes data
+// parts into Protobuf binary form.
 type ProtoStore struct {
 	path string
 }
 
+// Insert converts every data part into gob binary representation,
+// combines all representations into the file, and creates block
+// for every data part.
 func (store ProtoStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
@@ -49,6 +54,9 @@ func (store ProtoStore) createBlock(d Elements) (data.Block, []byte, error) {
 	return b, buf, nil
 }
 
+// Read uses input meta-information to extract only required binary
+// representations of blocks from the file, convert them to Elements,
+// and return the result.
 func (store ProtoStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
 	var totalSize int
 	for _, s := range blockSizes {

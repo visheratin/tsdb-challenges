@@ -1,5 +1,7 @@
 package part2
 
+// GenerateData is a simple function for creating datasets
+// that are used in stores benchmarking.
 func GenerateData(len int) []Element {
 	res := make([]Element, len)
 	t := int64(0)

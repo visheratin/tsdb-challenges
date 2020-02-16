@@ -11,10 +11,16 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
+// BinaryStore is an implementation of Store that serializes input time series into
+// binary representation by calculating deltas of timestamps and values and placing
+// them one after another.
 type BinaryStore struct {
 	path string
 }
 
+// Insert preallocates binary slice for serialized data, calculates deltas,
+// converts them to bytes, fills binary slice with them and writes binary slice
+// to the file.
 func (store BinaryStore) Insert(dataParts []Elements) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
@@ -73,7 +79,11 @@ func (store BinaryStore) createBlock(d []Element) (data.Block, []byte, error) {
 	return b, buf, nil
 }
 
-func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int, offset int64) (Elements, error) {
+// Read uses input meta-information to extract only required binary
+// representations of blocks from the file, convert them to Elements,
+// and return the result.
+func (store BinaryStore) Read(blockIds []int, blockSizes []int, blockNums []int,
+	offset int64) (Elements, error) {
 	var totalSize int
 	for _, s := range blockSizes {
 		totalSize += s
