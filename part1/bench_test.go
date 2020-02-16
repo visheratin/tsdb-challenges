@@ -12,7 +12,7 @@ type bench struct {
 	init bool
 }
 
-func BenchmarkTreesIndexSearch_empty(b *testing.B) {
+func BenchmarkTreesIndexSearch(b *testing.B) {
 	trees := []string{"tree", "advTree", "bTree", "slice"}
 	benches := []bench{
 		{"1000 elements empty", 1000, false},
