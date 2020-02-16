@@ -6,6 +6,9 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
+// BTreeIndex is a tree-based index that is very simple B-tree inside.
+// Since every node of the tree stores a slice of blocks, depth of BTreeIndex
+// is much smaller than for TreeIndex and AdvTreeIndex.
 type BTreeIndex struct {
 	ID     string
 	Length int
@@ -23,11 +26,13 @@ func newBTreeIndex(id string) *BTreeIndex {
 	return &idx
 }
 
+// Insert loads input value b into the tree through the root node.
 func (idx *BTreeIndex) Insert(b data.Block) {
 	idx.Root.insert(b)
 	idx.Length++
 }
 
+// Search extracts from the tree blocks that intersect with the search conditions.
 func (idx *BTreeIndex) Search(min float64, max float64, res []data.Block) []data.Block {
 	if res == nil {
 		res = make([]data.Block, 0, idx.Length)
@@ -35,6 +40,8 @@ func (idx *BTreeIndex) Search(min float64, max float64, res []data.Block) []data
 	return idx.Root.search(min, max, res)
 }
 
+// BTreeNode is a node of BTreeIndex. Leaf and non-leaf nodes store slices of blocks.
+// BTreeNode stores its boundaries in Min and Max fields.
 type BTreeNode struct {
 	LeftPart  *BTreeNode
 	RightPart *BTreeNode

@@ -6,6 +6,7 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
+// AdvTreeIndex is better implementation of tree-based index with less memory allocations.
 type AdvTreeIndex struct {
 	ID     string
 	Length int
@@ -23,11 +24,13 @@ func newAdvTreeIndex(id string) *AdvTreeIndex {
 	return &idx
 }
 
+// Insert loads input value b into the tree through the root node.
 func (idx *AdvTreeIndex) Insert(b data.Block) {
 	idx.Root.insert(b)
 	idx.Length++
 }
 
+// Search extracts from the tree blocks that intersect with the search conditions.
 func (idx *AdvTreeIndex) Search(min float64, max float64, res []data.Block) []data.Block {
 	if res == nil {
 		res = make([]data.Block, 0, idx.Length)
@@ -36,6 +39,8 @@ func (idx *AdvTreeIndex) Search(min float64, max float64, res []data.Block) []da
 	return res
 }
 
+// AdvTreeNode is a node of AdvTreeIndex. It stores block if it is a leaf node.
+// AdvTreeNode stores its boundaries in Min and Max fields.
 type AdvTreeNode struct {
 	LeftPart  *AdvTreeNode
 	RightPart *AdvTreeNode
