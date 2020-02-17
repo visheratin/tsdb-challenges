@@ -4,7 +4,7 @@ import "github.com/visheratin/tsdb-challenges/data"
 
 // Store is the inferface that describes a block storage for time series data.
 //
-// Insert loads slice of data parts, each of which is represented as []data.Element,
+// Insert loads slice of data parts, each of which is represented as Elements,
 // to the storage and if successful returns a slice of index blocks.
 //
 // Read uses meta-information about data blocks to extract data from the store.

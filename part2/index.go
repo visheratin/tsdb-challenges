@@ -6,8 +6,7 @@ import (
 	"github.com/visheratin/tsdb-challenges/data"
 )
 
-// Index is data structure that implements indexing logic for
-// a time series database.
+// Index is data structure that implements indexing logic for a time series database.
 //
 //	ID - name of the sensor.
 //
@@ -28,9 +27,8 @@ type Index struct {
 	Blocks        []data.Block
 }
 
-// NewIndex creates new index, initializes Store based on the
-// storeType parameter, loads input data d to the Store and
-// loads output blocks into the index.
+// NewIndex creates new index, initializes Store based on the storeType parameter, loads
+// input data d to the Store and loads output blocks into the index.
 func NewIndex(id string, blockInterval int64, storeType string, storePath string, d []Element) (Index, error) {
 	if len(d) == 0 {
 		return Index{}, errors.New("data slice is empty")
@@ -65,9 +63,8 @@ func NewIndex(id string, blockInterval int64, storeType string, storePath string
 	return idx, nil
 }
 
-// Extract based on start and finish parameters calculates
-// blocks that need to be extracted, and reads them from
-// the Store implementation.
+// Extract based on start and finish parameters calculates  blocks that need to be extracted,
+// and reads them from the Store implementation.
 func (idx Index) Extract(start, finish int64) ([]Element, error) {
 	if finish < idx.StartTime {
 		return nil, errors.New("no data for the specified period")
