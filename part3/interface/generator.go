@@ -2,6 +2,7 @@ package iface
 
 import "github.com/visheratin/tsdb-challenges/part3"
 
+// GenerateData creates slice of elements for benchmarking.
 func GenerateData(len int, dtype part3.DataType) []part3.Element {
 	res := make([]part3.Element, len)
 	t := int64(0)

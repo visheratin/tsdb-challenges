@@ -12,10 +12,14 @@ import (
 	"github.com/visheratin/tsdb-challenges/part3"
 )
 
+// Store is the a block storage for serialized time series data that supports multiple
+// values types - int32, float32 and float64.
 type Store struct {
 	path string
 }
 
+// Insert loads slice of data parts, each of which is represented as Elements,
+// to the storage and if successful returns a slice of index blocks.
 func (store Store) Insert(dataParts []Elements, dtype part3.DataType) ([]data.Block, error) {
 	blocks := make([]data.Block, 0, len(dataParts))
 	fpath := path.Join(store.path, "data")
@@ -105,6 +109,7 @@ func createBlock(d Elements, dtype part3.DataType) (data.Block, []byte, error) {
 	return b, buf, nil
 }
 
+// Read uses meta-information about data blocks to extract data from the store.
 func (store Store) Read(blockIds []int, blockSizes []int, blockNums []int,
 	offset int64, dtype part3.DataType) (Elements, error) {
 	var totalSize int

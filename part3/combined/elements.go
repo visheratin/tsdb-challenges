@@ -4,6 +4,8 @@ import (
 	"github.com/visheratin/tsdb-challenges/part3"
 )
 
+// Elements is a combined data structure that is used for efficient but combersome processing of
+// time series of various types.
 type Elements struct {
 	Type part3.DataType
 	I32  []part3.Int32Element
@@ -11,6 +13,8 @@ type Elements struct {
 	F64  []part3.Float64Element
 }
 
+// NewElements creates Elements instance and preallocates required slice of size len based on
+// dtype parameter.
 func NewElements(dtype part3.DataType, len int) Elements {
 	el := Elements{}
 	switch dtype {
@@ -25,6 +29,7 @@ func NewElements(dtype part3.DataType, len int) Elements {
 	return el
 }
 
+// Len returns length of the data slice in use based on el.Type.
 func (el Elements) Len() int {
 	switch el.Type {
 	case part3.Int32:
@@ -38,6 +43,7 @@ func (el Elements) Len() int {
 	}
 }
 
+// Timestamp returns timestamp on i-th position in the data slice in use.
 func (el Elements) Timestamp(i int) int64 {
 	switch el.Type {
 	case part3.Int32:
@@ -51,6 +57,7 @@ func (el Elements) Timestamp(i int) int64 {
 	}
 }
 
+// Subset returns values of the data slice in use from sIdx to fIdx.
 func (el Elements) Subset(sIdx, fIdx int) Elements {
 	res := Elements{}
 	switch el.Type {
@@ -65,6 +72,7 @@ func (el Elements) Subset(sIdx, fIdx int) Elements {
 	return res
 }
 
+// Append puts values of d into the data slice in use based on el.Type.
 func (el *Elements) Append(d Elements) {
 	switch el.Type {
 	case part3.Int32:

@@ -2,6 +2,7 @@ package combined
 
 import "github.com/visheratin/tsdb-challenges/part3"
 
+// GenerateData creates Elements instance for benchmarking.
 func GenerateData(len int, dtype part3.DataType) Elements {
 	res := NewElements(dtype, len)
 	t := int64(0)
