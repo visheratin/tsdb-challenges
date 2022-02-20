@@ -1,14 +1,12 @@
 package part4
 
+// Number is a generic interface defining numeric value types.
 type Number interface {
 	int32 | float32 | float64
 }
 
-func Value[N Number](n N) float64 {
-	return float64(n)
-}
-
+// Element is a generic type where Value has generic type Number.
 type Element[ValueType Number] struct {
 	Timestamp int64
-	Val       ValueType
+	Value     ValueType
 }

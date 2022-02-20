@@ -76,19 +76,19 @@ func createBlock[N Number](d []Element[N], dtype DataType) (data.Block, []byte, 
 		c += 4
 		switch dtype {
 		case Int32:
-			f32 = uint32(d[i].Val)
+			f32 = uint32(d[i].Value)
 			f32d = f32 - f32p
 			f32p = f32
 			binary.LittleEndian.PutUint32(buf[c:c+4], f32d)
 			c += 4
 		case Float32:
-			f32 = math.Float32bits(float32(d[i].Val))
+			f32 = math.Float32bits(float32(d[i].Value))
 			f32d = f32 - f32p
 			f32p = f32
 			binary.LittleEndian.PutUint32(buf[c:c+4], f32d)
 			c += 4
 		case Float64:
-			f64 = math.Float64bits(float64(d[i].Val))
+			f64 = math.Float64bits(float64(d[i].Value))
 			f64d = f64 - f64p
 			f64p = f64
 			binary.LittleEndian.PutUint64(buf[c:c+8], f64d)
@@ -164,7 +164,7 @@ func readBlock[N Number](elNum int, bd []byte, dtype DataType) ([]Element[N], er
 			i += 4
 			el = Element[N]{
 				Timestamp: ts,
-				Val:       N(int32(v32)),
+				Value:     N(int32(v32)),
 			}
 			res[ec] = el
 		case Float32:
@@ -173,7 +173,7 @@ func readBlock[N Number](elNum int, bd []byte, dtype DataType) ([]Element[N], er
 			i += 4
 			el = Element[N]{
 				Timestamp: ts,
-				Val:       N(math.Float32frombits(v32)),
+				Value:     N(math.Float32frombits(v32)),
 			}
 			res[ec] = el
 		case Float64:
@@ -182,7 +182,7 @@ func readBlock[N Number](elNum int, bd []byte, dtype DataType) ([]Element[N], er
 			i += 8
 			el = Element[N]{
 				Timestamp: ts,
-				Val:       N(math.Float64frombits(f64)),
+				Value:     N(math.Float64frombits(f64)),
 			}
 			res[ec] = el
 		}

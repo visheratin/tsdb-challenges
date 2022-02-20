@@ -9,17 +9,17 @@ func GenerateData[N Number](len int, dtype DataType) []Element[N] {
 		case Int32:
 			res[i] = Element[N]{
 				Timestamp: t,
-				Val:       N(int32(i)),
+				Value:     N(int32(i)),
 			}
 		case Float32:
 			res[i] = Element[N]{
 				Timestamp: t,
-				Val:       N(float32(i)),
+				Value:     N(float32(i)),
 			}
 		case Float64:
 			res[i] = Element[N]{
 				Timestamp: t,
-				Val:       N(float64(i)),
+				Value:     N(float64(i)),
 			}
 		}
 		t += 3

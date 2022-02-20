@@ -52,7 +52,7 @@ func NewIndex[N Number](id string, blockInterval int64, storePath string, d []El
 	return idx, nil
 }
 
-// Extract based on start and finish parameters calculates  blocks that need to be extracted,
+// Extract based on start and finish parameters calculates blocks that need to be extracted,
 // and reads them from the Store.
 func Extract[N Number](idx Index, start, finish int64) ([]Element[N], error) {
 	if finish < idx.StartTime {

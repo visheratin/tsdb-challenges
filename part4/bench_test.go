@@ -106,7 +106,7 @@ func BenchmarkStoreExtract(b *testing.B) {
 			s := r.Int63n(minStart)
 			f := s + 1500000
 			b.StartTimer()
-			_, err := Extract[int32](idx, s, f)
+			_, err := Extract[float32](idx, s, f)
 			if err != nil {
 				b.Fatal(err)
 			}
@@ -130,7 +130,7 @@ func BenchmarkStoreExtract(b *testing.B) {
 			s := r.Int63n(minStart)
 			f := s + 1500000
 			b.StartTimer()
-			_, err := Extract[int32](idx, s, f)
+			_, err := Extract[float64](idx, s, f)
 			if err != nil {
 				b.Fatal(err)
 			}
