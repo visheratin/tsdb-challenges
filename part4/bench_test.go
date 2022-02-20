@@ -73,14 +73,14 @@ func BenchmarkStoreExtract(b *testing.B) {
 		b.Fatal(err)
 	}
 	finishTimestamp := int32Bench.data[len(int32Bench.data)-1].Timestamp
-	minStart := finishTimestamp - int64(500000000)
+	minStart := finishTimestamp - int64(1500000)
 	b.Run(int32Bench.name, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			b.StopTimer()
 			r := rand.New(rand.NewSource(time.Now().Unix()))
 			s := r.Int63n(minStart)
-			f := s + 500000000
+			f := s + 1500000
 			b.StartTimer()
 			_, err := Extract[int32](idx, s, f)
 			if err != nil {
@@ -97,14 +97,14 @@ func BenchmarkStoreExtract(b *testing.B) {
 		b.Fatal(err)
 	}
 	finishTimestamp = float32Bench.data[len(float32Bench.data)-1].Timestamp
-	minStart = finishTimestamp - int64(500000000)
+	minStart = finishTimestamp - int64(1500000)
 	b.Run(float32Bench.name, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			b.StopTimer()
 			r := rand.New(rand.NewSource(time.Now().Unix()))
 			s := r.Int63n(minStart)
-			f := s + 500000000
+			f := s + 1500000
 			b.StartTimer()
 			_, err := Extract[int32](idx, s, f)
 			if err != nil {
@@ -121,14 +121,14 @@ func BenchmarkStoreExtract(b *testing.B) {
 		b.Fatal(err)
 	}
 	finishTimestamp = float64Bench.data[len(float64Bench.data)-1].Timestamp
-	minStart = finishTimestamp - int64(500000000)
+	minStart = finishTimestamp - int64(1500000)
 	b.Run(float64Bench.name, func(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			b.StopTimer()
 			r := rand.New(rand.NewSource(time.Now().Unix()))
 			s := r.Int63n(minStart)
-			f := s + 500000000
+			f := s + 1500000
 			b.StartTimer()
 			_, err := Extract[int32](idx, s, f)
 			if err != nil {

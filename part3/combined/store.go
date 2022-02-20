@@ -163,15 +163,15 @@ func (store Store) readBlock(elNum int, bd []byte, dtype part3.DataType) (Elemen
 	ec := 0
 	i := 0
 	var f64 uint64
-	var v32 uint32
+	var t32, v32 uint32
 	var i32e part3.Int32Element
 	var f32e part3.Float32Element
 	var f64e part3.Float64Element
 	var tb, vb []byte
 	for i < len(bd) && ec < elNum {
 		tb = bd[i : i+4]
-		v32 = binary.LittleEndian.Uint32(tb)
-		ts += int64(v32)
+		t32 = binary.LittleEndian.Uint32(tb)
+		ts += int64(t32)
 		i += 4
 		switch dtype {
 		case part3.Int32:

@@ -52,14 +52,14 @@ func BenchmarkStoreExtract(b *testing.B) {
 			b.Fatal(err)
 		}
 		finishTimestamp := bs.data[len(bs.data)-1].Timestamp()
-		minStart := finishTimestamp - int64(500000000)
+		minStart := finishTimestamp - int64(1500000)
 		b.Run(bs.name, func(b *testing.B) {
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
 				b.StopTimer()
 				r := rand.New(rand.NewSource(time.Now().Unix()))
 				s := r.Int63n(minStart)
-				f := s + 500000000
+				f := s + 1500000
 				b.StartTimer()
 				_, err := idx.Extract(s, f)
 				if err != nil {

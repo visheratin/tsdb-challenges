@@ -149,13 +149,13 @@ func readBlock[N Number](elNum int, bd []byte, dtype DataType) ([]Element[N], er
 	ec := 0
 	i := 0
 	var f64 uint64
-	var v32 uint32
+	var t32, v32 uint32
 	var el Element[N]
 	var tb, vb []byte
 	for i < len(bd) && ec < elNum {
 		tb = bd[i : i+4]
-		v32 = binary.LittleEndian.Uint32(tb)
-		ts += int64(v32)
+		t32 = binary.LittleEndian.Uint32(tb)
+		ts += int64(t32)
 		i += 4
 		switch dtype {
 		case Int32:

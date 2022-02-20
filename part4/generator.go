@@ -22,7 +22,7 @@ func GenerateData[N Number](len int, dtype DataType) []Element[N] {
 				Val:       N(float64(i)),
 			}
 		}
-		t += 1234
+		t += 3
 	}
 	return res
 }

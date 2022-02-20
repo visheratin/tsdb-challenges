@@ -24,7 +24,7 @@ func GenerateData(len int, dtype part3.DataType) Elements {
 				Val: float64(i),
 			}
 		}
-		t += 1234
+		t += 3
 	}
 	return res
 }
