@@ -1,6 +1,6 @@
 module github.com/visheratin/tsdb-challenges
 
-go 1.13
+go 1.18
 
 require (
 	github.com/gogo/protobuf v1.3.1
